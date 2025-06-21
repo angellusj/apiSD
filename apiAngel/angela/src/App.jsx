@@ -14,7 +14,7 @@ function App() {
     try {
       const res = await fetch(apiBaseUrl);
       const data = await res.json();
-      setResponseMessage(`GET funcionando! Itens: ${JSON.stringify(data)}`);
+      setResponseMessage(`GET PRIDE MONTH SONADOW funcionando! ${JSON.stringify(data)}`);
     } catch (error) {
       setResponseMessage('Erro no GET');
     }
@@ -33,7 +33,7 @@ function App() {
         body: JSON.stringify(item),
       });
       const data = await res.json();
-      setResponseMessage(`Esse é um POST de HAPPY PRIDE MONTH SONADOW: método POST funcionando! Resposta: ${data}`);
+      setResponseMessage(`Esse é um POST PRIDE MONTH SONADOW: método POST funcionando! ${data}`);
     } catch (error) {
       setResponseMessage('Erro no POST');
     }
@@ -52,7 +52,7 @@ function App() {
         body: JSON.stringify(item),
       });
       const data = await res.json();
-      setResponseMessage(`Esse é um PUT de HAPPY PRIDE MONTH SONADOW: método PUT funcionando! Resposta: ${data}`);
+      setResponseMessage(`Esse é um PUT PRIDE MONTH SONADOW: método PUT funcionando! ${data}`);
     } catch (error) {
       setResponseMessage('Erro no PUT');
     }
@@ -62,7 +62,7 @@ function App() {
     try {
       const res = await fetch(`${apiBaseUrl}/${inputId}`);
       const data = await res.json();
-      setResponseMessage(`GET por ID funcionando! Item: ${JSON.stringify(data)}`);
+      setResponseMessage(`GET PRIDE MONTH SONADOW por ID funcionando! ${JSON.stringify(data)}`);
     } catch (error) {
       setResponseMessage('Erro no GET por ID');
     }
@@ -74,7 +74,7 @@ function App() {
         method: 'DELETE',
       });
       const data = await res.json();
-      setResponseMessage(`DELETE funcionando! Resposta: ${data}`);
+      setResponseMessage(`DELETE HAPPY PRIDE MONTH SONADOW funcionando! ${data}`);
     } catch (error) {
       setResponseMessage('Erro no DELETE');
     }
