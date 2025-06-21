@@ -1,114 +1,125 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './index.css';
 import sonicImg from '/sonadow-sonic.gif';
 
+const apiBaseUrl = 'https://iuckiy67qg.execute-api.us-east-1.amazonaws.com/angel/items';
+
 function App() {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [responseMessage, setResponseMessage] = useState('');
+  const [inputId, setInputId] = useState('');
+  const [inputName, setInputName] = useState('');
+  const [inputPrice, setInputPrice] = useState('');
 
-  const apiUrl = 'https://iuckiy67qg.execute-api.us-east-1.amazonaws.com/angel/items';
-  const apiItemUrl = (id) => `https://iuckiy67qg.execute-api.us-east-1.amazonaws.com/angel/items/${id}`;
+  const handleGetAll = async () => {
+    try {
+      const res = await fetch(apiBaseUrl);
+      const data = await res.json();
+      setResponseMessage(`GET funcionando! Itens: ${JSON.stringify(data)}`);
+    } catch (error) {
+      setResponseMessage('Erro no GET');
+    }
+  };
 
-  const fetchItems = () => {
-    setLoading(true);
-    fetch(apiUrl)
-      .then((res) => res.json())
-      .then((data) => {
-        setItems(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
+  const handlePost = async () => {
+    try {
+      const item = {
+        id: inputId,
+        name: inputName,
+        price: parseInt(inputPrice),
+      };
+      const res = await fetch(apiBaseUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item),
       });
+      const data = await res.json();
+      setResponseMessage(`Esse é um POST de HAPPY PRIDE MONTH SONADOW: método POST funcionando! Resposta: ${data}`);
+    } catch (error) {
+      setResponseMessage('Erro no POST');
+    }
   };
 
-  const postItem = () => {
-    const newItem = {
-      id: String(Date.now()),
-      price: Math.floor(Math.random() * 1000),
-      name: 'Item POST ' + new Date().toLocaleTimeString()
-    };
-
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newItem)
-    })
-      .then((res) => res.text())
-      .then(() => fetchItems())
-      .catch((err) => setError(err.message));
+  const handlePut = async () => {
+    try {
+      const item = {
+        id: inputId,
+        name: inputName,
+        price: parseInt(inputPrice),
+      };
+      const res = await fetch(apiBaseUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item),
+      });
+      const data = await res.json();
+      setResponseMessage(`Esse é um PUT de HAPPY PRIDE MONTH SONADOW: método PUT funcionando! Resposta: ${data}`);
+    } catch (error) {
+      setResponseMessage('Erro no PUT');
+    }
   };
 
-  const putItem = () => {
-    const updatedItem = {
-      id: 'teste123',
-      price: Math.floor(Math.random() * 1000),
-      name: 'Item Atualizado via PUT'
-    };
-
-    fetch(apiUrl, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedItem)
-    })
-      .then((res) => res.text())
-      .then(() => fetchItems())
-      .catch((err) => setError(err.message));
+  const handleGetById = async () => {
+    try {
+      const res = await fetch(`${apiBaseUrl}/${inputId}`);
+      const data = await res.json();
+      setResponseMessage(`GET por ID funcionando! Item: ${JSON.stringify(data)}`);
+    } catch (error) {
+      setResponseMessage('Erro no GET por ID');
+    }
   };
 
-  const deleteItem = () => {
-    const id = prompt('Digite o ID do item que deseja deletar:');
-    if (!id) return;
-
-    fetch(apiItemUrl(id), { method: 'DELETE' })
-      .then((res) => res.text())
-      .then(() => fetchItems())
-      .catch((err) => setError(err.message));
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(`${apiBaseUrl}/${inputId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      setResponseMessage(`DELETE funcionando! Resposta: ${data}`);
+    } catch (error) {
+      setResponseMessage('Erro no DELETE');
+    }
   };
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-b from-red-500 via-orange-400 via-yellow-300 via-green-400 via-blue-500 to-purple-600 p-4">
-      <img src={sonicImg} alt="Sonic" className="w-150 h-auto mb-8" />
+    <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-b from-red-500 via-orange-400 via-yellow-300 via-green-400 via-blue-500 to-purple-600 text-white p-4 space-y-4">
+      <img src={sonicImg} alt="Sonic" className="w-64 h-auto" />
 
-      {loading && <p className="text-white text-lg">Carregando...</p>}
-      {error && <p className="text-red-300 text-lg">Erro: {error}</p>}
+      <div className="flex flex-col space-y-2 w-full max-w-md">
+        <input
+          type="text"
+          placeholder="ID"
+          value={inputId}
+          onChange={(e) => setInputId(e.target.value)}
+          className="p-2 rounded text-black"
+        />
+        <input
+          type="text"
+          placeholder="Name"
+          value={inputName}
+          onChange={(e) => setInputName(e.target.value)}
+          className="p-2 rounded text-black"
+        />
+        <input
+          type="number"
+          placeholder="Price"
+          value={inputPrice}
+          onChange={(e) => setInputPrice(e.target.value)}
+          className="p-2 rounded text-black"
+        />
+      </div>
 
-      {!loading && !error && (
-        <>
-          <ul className="text-white text-center">
-            {items.length > 0 ? (
-              items.map((item) => (
-                <li key={item.id} className="mb-1">
-                  {item.id}: {item.name} - R${item.price}
-                </li>
-              ))
-            ) : (
-              <p>Nenhum item encontrado.</p>
-            )}
-          </ul>
+      <div className="flex flex-wrap gap-2 justify-center">
+        <button onClick={handleGetAll} className="bg-blue-700 px-4 py-2 rounded hover:bg-blue-800">GET Todos</button>
+        <button onClick={handleGetById} className="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800">GET por ID</button>
+        <button onClick={handlePost} className="bg-green-700 px-4 py-2 rounded hover:bg-green-800">POST</button>
+        <button onClick={handlePut} className="bg-yellow-500 px-4 py-2 rounded hover:bg-yellow-600">PUT</button>
+        <button onClick={handleDelete} className="bg-red-700 px-4 py-2 rounded hover:bg-red-800">DELETE</button>
+      </div>
 
-          <div className="mt-6 flex flex-col space-y-2">
-            <button onClick={fetchItems} className="bg-white text-black px-4 py-2 rounded hover:bg-gray-200">
-              GET Items
-            </button>
-            <button onClick={postItem} className="bg-green-300 px-4 py-2 rounded hover:bg-green-400">
-              POST Novo Item
-            </button>
-            <button onClick={putItem} className="bg-yellow-300 px-4 py-2 rounded hover:bg-yellow-400">
-              PUT Atualizar Item Fixo
-            </button>
-            <button onClick={deleteItem} className="bg-red-400 px-4 py-2 rounded hover:bg-red-500">
-              DELETE Item por ID
-            </button>
-          </div>
-        </>
-      )}
+      <div className="bg-black/50 p-4 rounded w-full max-w-md text-center break-words">
+        <strong>Resposta da API:</strong>
+        <p>{responseMessage}</p>
+      </div>
     </div>
   );
 }
